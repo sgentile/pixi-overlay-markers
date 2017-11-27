@@ -1,0 +1,18 @@
+{
+  "name": "pixi-overlay-markers",
+  "version": "0.0.1",
+  "description": "create markers for use with leaflet pixiOverlay ",
+  "main": "index.js",  
+  "keywords": [
+    "pixi",
+    "leaflet",
+    "pixiOverlay"
+  ],
+  "author": "Steve Gentile",
+  "license": "MIT",
+  "dependencies": {
+    "leaflet": "^1.2.0",
+    "leaflet-pixi-overlay": "0.0.6",
+    "pixi.js": "^4.5.4"
+  }
+}
