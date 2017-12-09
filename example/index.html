@@ -10,21 +10,98 @@
     <script src="/node_modules/pixi.js/dist/pixi.js"></script>
     <script src="/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js"></script>
     <script src="/node_modules/pixi-overlay-markers/index.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-    <!-- <script src="js/tools.min.js"></script> -->
-    <link rel="stylesheet" type="text/css" href="cartes.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>    
+    <!-- <link rel="stylesheet" type="text/css" href="cartes.css"> -->
 </head>
 
 <body style="height: 100%; margin: 0; overflow: hidden;">
+    <div style="position: absolute;
+    z-index: 9999;
+    top: 38px;
+    left: 10px;">
+        <button onClick="load()">Load Data</button>        
+    </div>
     <div id="map" style="height: 100%; width: 100%;" class="cartes">
-        <div class="legend geometry top center hide">
-            <div class="wrapper">
-                <div class="content"></div>
+            <div class="legend geometry top center hide">
+                <div class="wrapper">
+                    <div class="content"></div>
+                </div>
             </div>
         </div>
-    </div>
-    <script>	
+    
+    <script>
+        
+    //     debugger;
+    //     loader.add('redmarker', 'red-marker.png');
+    //   loader.add('bluemarker', 'blue-marker.png');
+    //   loader.add('yellowmarker', 'yellow-marker.png');
+    //   loader.add('yellowcirclemarker', 'yellow-circle-marker.png');
+    //   loader.add('redcirclemarker', 'red-circle-marker.png');
+            var map = L.map('map', { preferCanvas: true, renderer: L.canvas() }).setView([46.953387, 2.892341], 6);
+            L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+                subdomains: 'abcd',
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                minZoom: 4,
+                maxZoom: 18
+            }).addTo(map);
+            map.attributionControl.setPosition('bottomleft');
+            map.zoomControl.setPosition('bottomright');
+            
+            const resources = {
+                'redmarker': 'red-marker.png',
+                'bluemarker': 'blue-marker.png',
+                'yellowmarker': 'yellow-marker.png',
+                'yellowcirclemarker': 'yellow-circle-marker.png',
+                'redcirclemarker': 'red-circle-marker.png' 
+            }
+
+            var self = this;
+            self.pixiOverlayWrapper = new PixiOverlayWrapper(map, resources);            
+
+
+            function load(){
+                if(self.pixiOverlayWrapper.hasLayer('cities')){
+                    self.pixiOverlayWrapper.removeLayer('cities');
+                }
+                const json = 'french-cities.json'; //;cities.json';
+                axios.get(json).then((result) => {
+                    var markers = result.data.map(marker => {
+                        marker.lat = marker.latitude;
+                        marker.lon = marker.longitude;
+                        return marker;
+                      });
+                    self.pixiOverlayWrapper.createLayer('cities', markers, (marker, textures) => {
+                        //const index = Math.floor(Math.random() * textures.length); 
+                        let texture = PIXI.Texture.WHITE;
+                        if(textures){
+                            texture = textures['bluemarker'].texture;   
+                            
+                        }                                         
+                        let markerSprite = new PIXI.Sprite(texture);
+                        markerSprite.tint = 0xff0000; 
+                        markerSprite.buttonMode = true;
+                        markerSprite.interactive = true;
+                        markerSprite.alpha = .8;
+                        markerSprite.on('mousedown', () => {
+                            // L.DomUtil.removeClass(legend, 'hide');
+                            // legendContent.innerHTML = marker.city || marker.label;
+                            alert(marker.city || marker.label);
+                        });
+                        return markerSprite;
+                    });
+                    // console.log('cities', self.pixiOverlayWrapper.hasLayer('cities'));
+                    // self.pixiOverlayWrapper.render();
+                    //self.pixiOverlayWrapper.createLayer('cities', markers);
+                    self.pixiOverlayWrapper.render();
+                });
+                //const json = 'french-cities.json'; //;cities.json';
+                //axios.get(json).then((result) => {
+                    
+                //});
+                
+            }
+        </script>
+    <!-- <script>	
         var loader = new PIXI.loaders.Loader();
         loader.add('redmarker', 'red-marker.png');
         loader.add('bluemarker', 'blue-marker.png');
@@ -41,12 +118,14 @@
             legendContent.innerHTML = 'fetching records';
             const json = 'french-cities.json'; //;cities.json';
 
-            var map = L.map('map').setView([37.49229399862877, -96.94335937500001], 4);
+            //var map = L.map('map').setView([37.49229399862877, -96.94335937500001], 4);
             //if (json === 'french-cities.json') {
                 //map = L.map('map').setView([46.953387, 2.892341], 6);
             // } else if (json === 'cities.json') {
             //     map = L.map('map', { preferCanvas: true, renderer: L.canvas() }).setView([37.49229399862877, -96.94335937500001], 4);
             // }
+            var map = L.map('map').setView([46.953387, 2.892341], 6);
+            
 
             L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
                 subdomains: 'abcd',
@@ -67,26 +146,27 @@
                   };
                   // const wrapper = pixiOverlayWrapper.initialize(map, textures);
                   // wrapper.render();
-                  debugger;
+                
                   const pixiOverlayWrapper = new PixiOverlayWrapper(map, textures);
+                  debugger;
                   //callback(pixiOverlayWrapper, textures);
-                  axios.get('cities.json').then((result) => {
+                  axios.get('french-cities.json').then((result) => {
                       var markers = result.data.map(marker => {
                         marker.lat = marker.latitude;
                         marker.lon = marker.longitude;
                         return marker;
                       });
-debugger;
+                      
                       pixiOverlayWrapper.createLayer('cities', markers, (marker) => {
                         //const index = Math.floor(Math.random() * texturesArray.length);                  
-                        let markerSprite = new PIXI.Sprite(textures['bluemarker']);
+                        let markerSprite = new PIXI.Sprite(textures['redmarker']);
                         markerSprite.buttonMode = true;
                         markerSprite.interactive = true;
                         markerSprite.alpha = .8;
                         markerSprite.on('mousedown', () => {
                             L.DomUtil.removeClass(legend, 'hide');
                             legendContent.innerHTML = marker.city || marker.label;
-                        });
+                        });                    
                         return markerSprite;
                     });
                     pixiOverlayWrapper.render();
@@ -135,7 +215,7 @@ debugger;
             // });
                       
         });
-    </script>
+    </script> -->
 </body>
 
 </html>
