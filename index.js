@@ -44,13 +44,13 @@
     this.map = map;
     this.resources = resources;
     this.loader = new PIXI.loaders.Loader();
-    this.textures = [];    
+    this.textures = {};    
     Object.keys(this.resources).forEach(key => {
       this.loader.add(key, this.resources[key]);
     });    
     this.loader.load((loader, resources) => {
       Object.keys(this.resources).forEach(key => {
-        this.textures.push(resources[key].texture);        
+        this.textures[key] = resources[key].texture;        
       });
     });
 
@@ -108,14 +108,10 @@
           let firstDraw = true,
               prevZoom = true,
               frame = null,
-              focus = null;
-              //invScale = .5 / scale;
-              // minScale = 10,
-              // maxScale = 25;
-
-              var invScale = this.options.invScaleBase / scale;
-              var minScale = this.options.minScale;
-              var maxScale = this.options.maxScale;
+              focus = null,
+              invScale = this.options.invScaleBase / scale,
+              minScale = this.options.minScale,
+              maxScale = this.options.maxScale;
 
             layer._myDataShapes.forEach(dataShape => {
               const point = dataShape.point;

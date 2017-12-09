@@ -10,8 +10,7 @@
     <script src="/node_modules/pixi.js/dist/pixi.js"></script>
     <script src="/node_modules/leaflet-pixi-overlay/L.PixiOverlay.js"></script>
     <script src="/node_modules/pixi-overlay-markers/index.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>    
-    <!-- <link rel="stylesheet" type="text/css" href="cartes.css"> -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>   
 </head>
 
 <body style="height: 100%; margin: 0; overflow: hidden;">
@@ -73,10 +72,9 @@
                     self.pixiOverlayWrapper.createLayer('cities', markers, (marker, textures) => {
                         //const index = Math.floor(Math.random() * textures.length); 
                         let texture = PIXI.Texture.WHITE;
-                        if(textures){
-                            texture = textures['bluemarker'].texture;   
-                            
-                        }                                         
+                        // if(textures){
+                        //     texture = textures['bluemarker'].texture;   
+                        // }                                         
                         let markerSprite = new PIXI.Sprite(texture);
                         markerSprite.tint = 0xff0000; 
                         markerSprite.buttonMode = true;
