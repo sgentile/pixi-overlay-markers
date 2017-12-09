@@ -33,10 +33,11 @@
   }
 })(this, function(L, PIXI, pixiOverlay) {
   let defaultOptions = {
-    invScaleBase: .5,
-    minScale: 0,
-    maxScale: 40,
-    defaultTint: 0xff0000
+    invScaleBase: .8,
+    minScale: 48,
+    maxScale: 512,
+    tint: 0xff0000,
+    opacity: .8
   }
   function PixiOverlayWrapper(map, resources, options) {
     this.options = Object.assign(defaultOptions, options || {});
@@ -96,9 +97,8 @@
             sprite = createShapeCallback(point, textures);
           } else {                        
             sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-            sprite.tint = this.options.defaultTint;
-            //sprite.width = 100;
-            //sprite.height = 100;            
+            sprite.tint = this.options.tint;
+            sprite.opacity = this.options.opacity;
           }
           layer._myDataShapes.push({ point, sprite });
       })

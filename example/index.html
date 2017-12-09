@@ -29,13 +29,6 @@
         </div>
     
     <script>
-        
-    //     debugger;
-    //     loader.add('redmarker', 'red-marker.png');
-    //   loader.add('bluemarker', 'blue-marker.png');
-    //   loader.add('yellowmarker', 'yellow-marker.png');
-    //   loader.add('yellowcirclemarker', 'yellow-circle-marker.png');
-    //   loader.add('redcirclemarker', 'red-circle-marker.png');
             var map = L.map('map', { preferCanvas: true, renderer: L.canvas() }).setView([46.953387, 2.892341], 6);
             L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
                 subdomains: 'abcd',
@@ -76,7 +69,9 @@
                         //     texture = textures['bluemarker'].texture;   
                         // }                                         
                         let markerSprite = new PIXI.Sprite(texture);
-                        markerSprite.tint = 0xff0000; 
+                        markerSprite.tint = 0xff0000;                         
+                        markerSprite.height = 20;
+                        markerSprite.width  = 20;
                         markerSprite.buttonMode = true;
                         markerSprite.interactive = true;
                         markerSprite.alpha = .8;
