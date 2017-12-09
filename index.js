@@ -90,6 +90,7 @@
       const layer = new PIXI.Container();
       const textures = this.textures;
       // hold the objects here.
+      
       layer._myDataShapes = [];
       data.forEach(point => {
           let sprite;
@@ -168,125 +169,9 @@
 			}     			
     };
 
-    this.create = function(markers) {
-      
 
-        var legend = document.querySelector('div.legend.geometry');
-        var legendContent = legend.querySelector('.content');
-
-        L.DomUtil.removeClass(legend, 'hide');
-        legendContent.innerHTML = 'fetching records';
-        
-
-            L.DomUtil.removeClass(legend, 'hide');
-            legendContent.innerHTML = markers.length + ' records';
-            var markerSprites = [];
-            var pixiLayer = (function () {
-                var firstDraw = true;
-                var prevZoom;
-                // var colorScale = d3.scaleLinear()
-                //     .domain([0, 50, 100])
-                //     .range(["#c6233c", "#ffd300", "#008000"]);
-
-                var frame = null;
-                var focus = null;
-                var pixiContainer = new PIXI.Container();
-                var forceCanvas = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                return L.pixiOverlay(function (utils) {
-                    var zoom = utils.getMap().getZoom();
-                    if (frame) {
-                        cancelAnimationFrame(frame);
-                        frame = null;
-                    }
-                    var container = utils.getContainer();
-                    var renderer = utils.getRenderer();
-                    var project = utils.latLngToLayerPoint;
-                    var scale = utils.getScale();
-                    var invScale = 1 / scale;
-                    var minScale = 48;
-                    var maxScale = 512;
-                    if (firstDraw) {
-                        prevZoom = zoom;
-                        markers.forEach(function (marker) {
-                            var coords = project([marker.latitude, marker.longitude]);
-                            var index = Math.floor(Math.random() * this.textures.length);
-                            var markerSprite = new PIXI.Sprite(this.textures[index]);
-                            markerSprite.buttonMode = true;
-                            markerSprite.interactive = true;
-                            markerSprite.alpha = .8;
-                            markerSprite.on('mousedown', () => {
-                                L.DomUtil.removeClass(legend, 'hide');
-                                legendContent.innerHTML = marker.city || marker.label;
-                            });
-                            markerSprite.textureIndex = index;
-                            markerSprite.x = coords.x;
-                            markerSprite.y = coords.y;
-                            markerSprite.anchor.set(0.5, 0.5);
-                            //var tint = d3.color(colorScale(marker.avancement || Math.random() * 100)).rgb();
-                            //markerSprite.tint = 256 * (tint.r * 256 + tint.g) + tint.b;
-                            container.addChild(markerSprite);
-                            markerSprites.push(markerSprite);
-                            markerSprite.legend = marker.city || marker.label;
-                        });
-                    }
-                    if (firstDraw || prevZoom !== zoom) {
-                        markerSprites.forEach(function (markerSprite) {
-                            if (firstDraw) {
-                                if(invScale < minScale){
-                                    invScale = minScale;
-                                }
-                                else if(invScale > maxScale){
-                                    invScale = maxScale;
-                                } 
-                                markerSprite.scale.set(invScale);
-                            } 
-                            else {
-                                markerSprite.currentScale = markerSprite.scale.x;
-                                markerSprite.targetScale = invScale;
-                            }
-                        });
-                    }
-
-
-                    var start = null;
-                    var delta = 250;
-                    function animate(timestamp) {
-                        var progress;
-                        if (start === null) start = timestamp;
-                        progress = timestamp - start;
-                        var lambda = progress / delta;
-                        if (lambda > 1) lambda = 1;
-                        lambda = lambda * (0.4 + lambda * (2.2 + lambda * -1.6));
-                        let val;
-                        markerSprites.forEach(function (markerSprite) {
-                            val = markerSprite.currentScale + lambda * (markerSprite.targetScale - markerSprite.currentScale);                                    
-                            if(val < minScale){
-                                val = minScale;
-                            }
-                            else if(val > maxScale){
-                                val = maxScale;
-                            } 
-                            markerSprite.scale.set(val);
-                        });
-                        console.log('scale', val);
-                        renderer.render(container);
-                        if (progress < delta) {
-                            frame = requestAnimationFrame(animate);
-                        }
-                    }
-                    if (!firstDraw && prevZoom !== zoom) {
-                        frame = requestAnimationFrame(animate);
-                    }
-                    firstDraw = false;
-                    prevZoom = zoom;
-                    renderer.render(container);
-                }, pixiContainer, {
-                        forceCanvas: forceCanvas
-                    });
-            })();
-
-            pixiLayer.addTo(map);
-        
+    this.convertColorToHex = (color) => {
+        return parseInt(color.replace(/#/g, ''), 16);
     }
   }
   return PixiOverlayWrapper;

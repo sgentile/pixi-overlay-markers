@@ -40,12 +40,10 @@
             map.zoomControl.setPosition('bottomright');
             
             const resources = {
-                'redmarker': 'red-marker.png',
-                'bluemarker': 'blue-marker.png',
-                'yellowmarker': 'yellow-marker.png',
-                'yellowcirclemarker': 'yellow-circle-marker.png',
-                'redcirclemarker': 'red-circle-marker.png' 
+                'white': 'white-marker.png'
             }
+
+            const colors = ['#FF0000', '#0000FF', '#FFFF00', '#FFA500'];
 
             var self = this;
             self.pixiOverlayWrapper = new PixiOverlayWrapper(map, resources);            
@@ -63,152 +61,28 @@
                         return marker;
                       });
                     self.pixiOverlayWrapper.createLayer('cities', markers, (marker, textures) => {
-                        //const index = Math.floor(Math.random() * textures.length); 
-                        let texture = PIXI.Texture.WHITE;
-                        // if(textures){
-                        //     texture = textures['bluemarker'].texture;   
-                        // }                                         
-                        let markerSprite = new PIXI.Sprite(texture);
-                        markerSprite.tint = 0xff0000;                         
+                        //use random colors...
+                        const index = Math.floor(Math.random() * colors.length);                                                               
+                        const hexColor = self.pixiOverlayWrapper.convertColorToHex(colors[index]);
+
+                        let markerSprite = new PIXI.Sprite(textures['white']);                        
+                        markerSprite.tint = hexColor;
+                        markerSprite.originalTint = hexColor;
                         markerSprite.height = 20;
                         markerSprite.width  = 20;
                         markerSprite.buttonMode = true;
                         markerSprite.interactive = true;
                         markerSprite.alpha = .8;
                         markerSprite.on('mousedown', () => {
-                            // L.DomUtil.removeClass(legend, 'hide');
-                            // legendContent.innerHTML = marker.city || marker.label;
                             alert(marker.city || marker.label);
-                        });
+                        });                        
                         return markerSprite;
                     });
-                    // console.log('cities', self.pixiOverlayWrapper.hasLayer('cities'));
-                    // self.pixiOverlayWrapper.render();
                     //self.pixiOverlayWrapper.createLayer('cities', markers);
                     self.pixiOverlayWrapper.render();
                 });
-                //const json = 'french-cities.json'; //;cities.json';
-                //axios.get(json).then((result) => {
-                    
-                //});
-                
             }
         </script>
-    <!-- <script>	
-        var loader = new PIXI.loaders.Loader();
-        loader.add('redmarker', 'red-marker.png');
-        loader.add('bluemarker', 'blue-marker.png');
-        loader.add('yellowmarker', 'yellow-marker.png');
-        loader.add('yellowcirclemarker', 'yellow-circle-marker.png');
-        loader.add('redcirclemarker', 'red-circle-marker.png');
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            var legend = document.querySelector('div.legend.geometry');
-            var legendContent = legend.querySelector('.content');
-
-            L.DomUtil.removeClass(legend, 'hide');
-            legendContent.innerHTML = 'fetching records';
-            const json = 'french-cities.json'; //;cities.json';
-
-            //var map = L.map('map').setView([37.49229399862877, -96.94335937500001], 4);
-            //if (json === 'french-cities.json') {
-                //map = L.map('map').setView([46.953387, 2.892341], 6);
-            // } else if (json === 'cities.json') {
-            //     map = L.map('map', { preferCanvas: true, renderer: L.canvas() }).setView([37.49229399862877, -96.94335937500001], 4);
-            // }
-            var map = L.map('map').setView([46.953387, 2.892341], 6);
-            
-
-            L.tileLayer('//stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
-                subdomains: 'abcd',
-                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-                minZoom: 4,
-                maxZoom: 18
-            }).addTo(map);
-            map.attributionControl.setPosition('bottomleft');
-            map.zoomControl.setPosition('bottomright');
-            //function load(callback){
-                loader.load((loader, resources) => {
-                  const textures = {
-                      'bluemarker': resources.bluemarker.texture, 
-                      'yellowmarker': resources.yellowmarker.texture, 
-                      'redmarker': resources.redmarker.texture, 
-                      'yellowcirclemarker': resources.yellowcirclemarker.texture,
-                      'redcirclemarker': resources.redcirclemarker.texture
-                  };
-                  // const wrapper = pixiOverlayWrapper.initialize(map, textures);
-                  // wrapper.render();
-                
-                  const pixiOverlayWrapper = new PixiOverlayWrapper(map, textures);
-                  debugger;
-                  //callback(pixiOverlayWrapper, textures);
-                  axios.get('french-cities.json').then((result) => {
-                      var markers = result.data.map(marker => {
-                        marker.lat = marker.latitude;
-                        marker.lon = marker.longitude;
-                        return marker;
-                      });
-                      
-                      pixiOverlayWrapper.createLayer('cities', markers, (marker) => {
-                        //const index = Math.floor(Math.random() * texturesArray.length);                  
-                        let markerSprite = new PIXI.Sprite(textures['redmarker']);
-                        markerSprite.buttonMode = true;
-                        markerSprite.interactive = true;
-                        markerSprite.alpha = .8;
-                        markerSprite.on('mousedown', () => {
-                            L.DomUtil.removeClass(legend, 'hide');
-                            legendContent.innerHTML = marker.city || marker.label;
-                        });                    
-                        return markerSprite;
-                    });
-                    pixiOverlayWrapper.render();
-                    L.DomUtil.addClass(legend, 'hide');
-                    
-                  });
-                  
-              });
-
-            // load((pixiOverlayWrapper, textures) => {
-            //   //create two separate layers...
-
-            //   //random markers...
-            //   const texturesArray = ['bluemarker', 'yellowmarker', 'redmarker', 'yellowcirclemarker', 'redcirclemarker'];
-            //   axios.get('cities.json').then((result) => {
-
-            //     L.DomUtil.removeClass(legend, 'hide');
-            //     legendContent.innerHTML = 'Loaded';
-
-            //     var markers = result.data.map(marker => {
-            //       marker.lat = marker.latitude;
-            //       marker.lon = marker.longitude;
-            //       return marker;
-            //     });
-            //     console.log('cities.json', markers);
-            //     pixiOverlayWrapper.createLayer('cities', markers, (marker) => {
-            //       const index = Math.floor(Math.random() * texturesArray.length);                  
-            //       let markerSprite = new PIXI.Sprite(textures[texturesArray[index]]);
-            //       markerSprite.buttonMode = true;
-            //       markerSprite.interactive = true;
-            //       markerSprite.alpha = .8;
-            //       markerSprite.on('mousedown', () => {
-            //           L.DomUtil.removeClass(legend, 'hide');
-            //           legendContent.innerHTML = marker.city || marker.label;
-            //       });
-            //       return markerSprite;
-            //     });
-            //     console.log(pixiOverlayWrapper.hasLayer('cities'));
-            //     pixiOverlayWrapper.render();
-            //   });
-
-            //   // axios.get('cities.json').then((result) => {
-            //   //   var markers = result.data;
-            //   //   console.log('cities.json', markers);
-            //   // });
-            // });
-                      
-        });
-    </script> -->
 </body>
 
 </html>
