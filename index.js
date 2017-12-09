@@ -40,12 +40,11 @@
   }
   function PixiOverlayWrapper(map, resources, options) {
     this.options = Object.assign(defaultOptions, options || {});
-    debugger;
     this.rootContainer = new PIXI.Container(); //there shall be only one
     this.map = map;
     this.resources = resources;
     this.loader = new PIXI.loaders.Loader();
-    this.textures;    
+    this.textures = [];    
     Object.keys(this.resources).forEach(key => {
       this.loader.add(key, this.resources[key]);
     });    
