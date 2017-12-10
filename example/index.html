@@ -68,14 +68,22 @@
                         let markerSprite = new PIXI.Sprite(textures['white']);                        
                         markerSprite.tint = hexColor;
                         markerSprite.originalTint = hexColor;
-                        markerSprite.height = 20;
-                        markerSprite.width  = 20;
                         markerSprite.buttonMode = true;
                         markerSprite.interactive = true;
                         markerSprite.alpha = .8;
                         markerSprite.on('mousedown', () => {
                             alert(marker.city || marker.label);
-                        });                        
+                        });
+                        markerSprite.on('mouseover', () => {
+                            const hexColor = self.pixiOverlayWrapper.convertColorToHex("#FFD700");
+                            markerSprite.tint = hexColor;
+                            markerSprite.alpha = 1;
+                        });
+
+                        markerSprite.on('mouseout', () => {
+                            markerSprite.tint = markerSprite.originalTint;
+                            markerSprite.alpha = .8;
+                        });
                         return markerSprite;
                     });
                     //self.pixiOverlayWrapper.createLayer('cities', markers);

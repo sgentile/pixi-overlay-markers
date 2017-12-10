@@ -33,11 +33,12 @@
   }
 })(this, function(L, PIXI, pixiOverlay) {
   let defaultOptions = {
-    invScaleBase: .8,
+    invScaleBase: .5,
     minScale: 48,
     maxScale: 512,
     tint: 0xff0000,
-    opacity: .8
+    opacity: .7,
+    forceCanvas: true
   }
   function PixiOverlayWrapper(map, resources, options) {
     this.options = Object.assign(defaultOptions, options || {});
@@ -59,6 +60,7 @@
     this.pixiLayer = (() => {
       return L.pixiOverlay(utils => {
         //this is the draw function
+        console.log('begin drawing...');
         const zoom = map.getZoom();
         const renderer = utils.getRenderer();
         const project = utils.latLngToLayerPoint;
@@ -69,18 +71,25 @@
       
         this.rootContainer.children.forEach(childContainer => {
                 // execute each child container's draw function, making "this" the container itself
-                // the draw function above will then have access to whatever zoom and scale are currently being drawn
-                childContainer._myDrawFunc.call(childContainer, this.map, zoom, renderer, project, scale);
+                // the draw function above will then have access to whatever zoom and scale are currently being drawn                
+                childContainer._myDrawFunc.call(childContainer, this.map, zoom, renderer, project, scale);                    
+                
         });
         // final render of everything in the root container
         // rootContainer is the same object as if you did utils.getContainer()
         this._render = () => {          
-          this.map.invalidateSize();
-          this.map.fitBounds(this.map.getBounds());
-          renderer.render(this.rootContainer);
-        };
-        renderer.render(this.rootContainer);
-      }, this.rootContainer);	
+           this.map.invalidateSize();
+            this.map.fitBounds(this.map.getBounds());
+            renderer.render(this.rootContainer);  
+            console.log('_render done');                      
+        };        
+        setTimeout(() => {
+            renderer.render(this.rootContainer);
+            console.log('render done');
+        });
+      }, this.rootContainer, {
+        forceCanvas: this.options.forceCanvas
+      });	
     })();
     this.pixiLayer.addTo(map);
 
@@ -105,7 +114,7 @@
       })
 
       // attach a custom draw function callback for each container
-      layer._myDrawFunc = (map, zoom, renderer, project, scale) => {
+      layer._myDrawFunc = (map, zoom, renderer, project, scale) => {          
           let firstDraw = true,
               prevZoom = true,
               frame = null,
@@ -114,7 +123,7 @@
               minScale = this.options.minScale,
               maxScale = this.options.maxScale;
 
-            layer._myDataShapes.forEach(dataShape => {
+            layer._myDataShapes.forEach(dataShape => {            
               const point = dataShape.point;
               const sprite = dataShape.sprite;
 
@@ -130,7 +139,6 @@
               else if (invScale > maxScale) {
                   invScale = maxScale;
               }
-              console.log(invScale);
               sprite.scale.set(invScale);
 
               layer.addChild(sprite);
