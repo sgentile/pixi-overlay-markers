@@ -1,6 +1,6 @@
 {
   "name": "pixi-overlay-markers",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "create markers for use with leaflet pixiOverlay ",
   "main": "index.js",
   "keywords": [
