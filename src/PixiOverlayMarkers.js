@@ -1,4 +1,3 @@
-import { getLibName } from "./utils";
 import L from 'leaflet';
 import * as PIXI from 'pixi.js';
 import 'leaflet-pixi-overlay';
@@ -6,7 +5,6 @@ import 'leaflet-pixi-overlay';
 export default class PixiOverlayMarkers {
 
   constructor(map, resources, options) {
-    this._name = getLibName();
     const defaultOptions = {
       invScaleBase: 0.5,
       minScale: 48,
@@ -80,10 +78,6 @@ export default class PixiOverlayMarkers {
       );
     })();
     this.pixiLayer.addTo(map);
-  }
-
-  get name() {
-    return this._name;
   }
 
   createLayer(id, data, createShapeCallback) {
