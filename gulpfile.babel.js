@@ -57,21 +57,21 @@ gulp.task('clean', () =>
 
 // Webpack helper
 gulp.task('webpack:build-web', done => {
-  var env = {'BUILD_ENV':'PROD', 'TARGET_ENV': 'WEB'};
-  var taskName = 'webpack:build-web';
+  const env = { BUILD_ENV:'PROD', TARGET_ENV: 'WEB' };
+  const taskName = 'webpack:build-web';
   // run webpack
   webpack(webpackConfig(env), onBuild(done, taskName));
 });
 
 // Webpack watch helper
 // create a single instance of the compiler to allow caching
-var webDevCompiler = null;
+let webDevCompiler = null;
 gulp.task('webpack:build-web-dev', done => {
-  var env = {'BUILD_ENV':'DEV', 'TARGET_ENV': 'WEB'};
-  var taskName = 'webpack:build-web-dev';
+  const env = { BUILD_ENV:'DEV', TARGET_ENV: 'WEB' };
+  const taskName = 'webpack:build-web-dev';
   // build dev compiler
-  if(!webDevCompiler){
-      webDevCompiler = webpack(webpackConfig(env));
+  if (!webDevCompiler) {
+    webDevCompiler = webpack(webpackConfig(env));
   }
   // run webpack
   webDevCompiler.run(onBuild(done, taskName));
@@ -79,40 +79,41 @@ gulp.task('webpack:build-web-dev', done => {
 
 // Webpack helper
 gulp.task('webpack:build-node', done => {
-  var env = {'BUILD_ENV':'PROD', 'TARGET_ENV': 'NODE'};
-  var taskName = 'webpack:build-node';
+  const env = { BUILD_ENV:'PROD', TARGET_ENV: 'NODE' };
+  const taskName = 'webpack:build-node';
   // run webpack
   webpack(webpackConfig(env), onBuild(done, taskName));
 });
 
 // Webpack watch helper
 // create a single instance of the compiler to allow caching
-var nodeDevCompiler = null;
+let nodeDevCompiler = null;
 gulp.task('webpack:build-node-dev', done => {
-  var env = {'BUILD_ENV':'DEV', 'TARGET_ENV': 'NODE'};
-  var taskName = 'webpack:build-node-dev';
+  const env = { BUILD_ENV:'DEV', TARGET_ENV: 'NODE' };
+  const taskName = 'webpack:build-node-dev';
   // build dev compiler
-  if(!nodeDevCompiler){
-      nodeDevCompiler = webpack(webpackConfig(env));
+  if (!nodeDevCompiler) {
+    nodeDevCompiler = webpack(webpackConfig(env));
   }
   // run webpack
   nodeDevCompiler.run(onBuild(done, taskName));
 });
 
-function onBuild(done, taskName){
+function onBuild(done, taskName) {
   return (err, stats) => {
-    if(err)
+    if (err) {
       throw new gutil.PluginError(taskName, err);
-    $.util.log(`${taskName}`, stats.toString({colors: true}));
+    }
+    $.util.log(`${taskName}`, stats.toString({ colors: true }));
     done && done();
   }
 }
 
 // Sets environment variable
-function setEnv(buildEnv){
+function setEnv(buildEnv) {
   $.env({
     vars: {
-      BUILD_ENV: buildEnv
-    }
+      BUILD_ENV: buildEnv,
+    },
   });
 }

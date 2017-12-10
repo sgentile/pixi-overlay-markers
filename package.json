@@ -6,8 +6,6 @@
   "scripts": {
     "prepublish": "npm run build-all",
     "preversion": "npm run build-all && npm run unit",
-    "version": "git add .",
-    "postversion": "git push && git push --tags",
     "build": "gulp build",
     "build-dev": "gulp build-dev",
     "build-web": "gulp build-web",
