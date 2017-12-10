@@ -4,7 +4,9 @@
 
 npm install pixi-overlay-markers --save
 
-sample coming soon...
+Sample (html/js only) https://github.com/sgentile/pixi-overlay-marker-examples
+
+Sample with Angular5 https://github.com/sgentile/geo-markers
 
 ## Dev Instructions
 
