@@ -7,8 +7,8 @@ export default class PixiOverlayMarkers {
   constructor(map, resources, options) {
     const defaultOptions = {
       invScaleBase: 0.5,
-      minScale: 48,
-      maxScale: 512,
+      minScale: 0,
+      maxScale: 5,
       tint: 0xff0000,
       opacity: 0.7,
       forceCanvas: false,
