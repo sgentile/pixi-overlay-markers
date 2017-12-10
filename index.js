@@ -38,7 +38,7 @@
     maxScale: 512,
     tint: 0xff0000,
     opacity: .7,
-    forceCanvas: true
+    forceCanvas: false
   }
   function PixiOverlayWrapper(map, resources, options) {
     this.options = Object.assign(defaultOptions, options || {});
@@ -92,8 +92,6 @@
       });	
     })();
     this.pixiLayer.addTo(map);
-
-
 
     this.createLayer = (id, data, createShapeCallback) => {
       const layer = new PIXI.Container();
