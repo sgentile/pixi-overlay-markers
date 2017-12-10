@@ -8,6 +8,7 @@
     "preversion": "npm run build-all && npm run unit",
     "build": "gulp build-web",
     "build-web-dev": "gulp build-web-dev",
+    "build-all": "gulp build-web",
     "unit": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
     "unit-watch": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
     "test": "npm run unit-watch"
