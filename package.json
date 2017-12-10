@@ -38,7 +38,7 @@
   "homepage": "https://github.com/sgentile/pixi-overlay-markers",
   "dependencies": {
     "leaflet": "^1.2.0",
-    "leaflet-pixi-overlay": "^1.0.0",
+    "leaflet-pixi-overlay": "0.0.6",
     "pixi.js": "^4.5.4"
   },
   "devDependencies": {
