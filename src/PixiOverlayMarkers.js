@@ -38,7 +38,6 @@ export default class PixiOverlayMarkers {
       return new L.PixiOverlay(
         utils => {
           // this is the draw function
-          console.log("begin drawing...");
           const zoom = map.getZoom();
           const renderer = utils.getRenderer();
           this.renderer = renderer;
@@ -72,7 +71,6 @@ export default class PixiOverlayMarkers {
           };
           setTimeout(() => {
             renderer.render(this.rootContainer);
-            console.log("render done");
           });
         },
         this.rootContainer,
