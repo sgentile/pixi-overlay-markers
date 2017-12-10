@@ -4,8 +4,6 @@
   "description": "create markers for use with leaflet pixiOverlay ",
   "main": "./index.js",
   "scripts": {
-    "prepublish": "npm run build-all",
-    "preversion": "npm run build-all && npm run unit",
     "build": "gulp build-web",
     "build-web-dev": "gulp build-web-dev",
     "build-all": "gulp build-web",
