@@ -37,6 +37,8 @@
   ],
   "homepage": "https://github.com/sgentile/pixi-overlay-markers",
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "leaflet": "^1.2.0",
     "leaflet-pixi-overlay": "1.0.0",
     "pixi.js": "^4.5.4"
