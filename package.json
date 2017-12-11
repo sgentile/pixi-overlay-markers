@@ -3,7 +3,7 @@
   "version": "1.2.2",
   "description": "create markers for use with leaflet pixiOverlay ",
   "main": "./index.js",
-  "types": "./PixiOverlayMarkers.d.ts",
+  "types": "./lib/PixiOverlayMarkers.d.ts",
   "scripts": {
     "build": "gulp build-web",
     "start": "gulp build-web-dev",
