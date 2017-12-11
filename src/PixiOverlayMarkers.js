@@ -19,8 +19,8 @@ export default class PixiOverlayMarkers {
     this.loader = new PIXI.loaders.Loader();
     this.textures = {};
 
-    this.options = Object.assign(defaultOptions, options || {});   
-    
+    this.options = Object.assign(defaultOptions, options || {});
+
     // Load the resources
     Object.keys(this.resources).forEach(key => {
       this.loader.add(key, this.resources[key]);
@@ -45,10 +45,11 @@ export default class PixiOverlayMarkers {
           // loop through and children and execute their drawing functions
           // children will be added later in the createLayer() function above
 
-          this.rootContainer.children.forEach(childContainer => {
-            /* 
+          for (let i = 0; i < this.rootContainer.children.length; i++) {
+            const childContainer = this.rootContainer.children[i];
+            /*
               execute each child container's draw function, making "this" the container itself
-              the draw function above will then have access to whatever zoom and scale are 
+              the draw function above will then have access to whatever zoom and scale are
               currently being drawn
              */
 
@@ -60,16 +61,14 @@ export default class PixiOverlayMarkers {
               project,
               scale
             );
-          });
+          }
           // final render of everything in the root container
           // rootContainer is the same object as if you did utils.getContainer()
           this._render = () => {
             this.map.invalidateSize();
             this.map.fitBounds(this.map.getBounds());
           };
-          setTimeout(() => {
-            renderer.render(this.rootContainer);
-          });
+          renderer.render(this.rootContainer);
         },
         this.rootContainer,
         {
@@ -86,7 +85,8 @@ export default class PixiOverlayMarkers {
     // hold the objects here.
 
     layer._myDataShapes = [];
-    data.forEach(point => {
+    for (let i = 0; i < data.length; i++) {
+      const point = data[i];
       let sprite;
       if (createShapeCallback) {
         sprite = createShapeCallback(point, textures);
@@ -96,7 +96,8 @@ export default class PixiOverlayMarkers {
         sprite.opacity = this.options.opacity;
       }
       layer._myDataShapes.push({ point, sprite });
-    });
+      layer.addChild(sprite);
+    }
 
     // attach a custom draw function callback for each container
     layer._myDrawFunc = (map, zoom, renderer, project, scale) => {
@@ -104,9 +105,9 @@ export default class PixiOverlayMarkers {
       const minScale = this.options.minScale;
       const maxScale = this.options.maxScale;
 
-      layer._myDataShapes.forEach(dataShape => {
-        const point = dataShape.point;
-        const sprite = dataShape.sprite;
+      for (let i = 0; i < layer._myDataShapes.length; i++) {
+        const point = layer._myDataShapes[i].point;
+        const sprite = layer._myDataShapes[i].sprite;
 
         const coords = [point.lat, point.lon];
         const newPosition = project(coords);
@@ -119,9 +120,7 @@ export default class PixiOverlayMarkers {
           invScale = maxScale;
         }
         sprite.scale.set(invScale);
-
-        layer.addChild(sprite);
-      });
+      }
       renderer.render(layer);
     };
     layer._myId = id;
