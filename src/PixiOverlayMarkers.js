@@ -173,6 +173,12 @@ export default class PixiOverlayMarkers {
     this.pixiLayer._update();
   }
 
+  updateProperty(keyValue) {
+    // ie. self.pixiOverlayWrapper.updateProperty({alpha:this.value});
+    this.rootContainer = Object.assign(this.rootContainer, keyValue)
+    this.update();
+  }
+
   convertColorToHex(color) {
     return parseInt(color.replace(/#/g, ""), 16);
   }
