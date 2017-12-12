@@ -8,7 +8,7 @@ export default class PixiOverlayMarkers {
     const defaultOptions = {
       invScaleBase: 0.5,
       minScale: 0,
-      maxScale: 5,
+      maxScale: 16,
       tint: 0xff0000,
       opacity: 0.7,
       forceCanvas: false,
@@ -80,11 +80,12 @@ export default class PixiOverlayMarkers {
   }
 
   createLayer(id, data, createShapeCallback) {
-    const layer = new PIXI.Container();
+    const childContainer = new PIXI.Container();
+    childContainer._hasProjected = false;
     const textures = this.textures;
     // hold the objects here.
 
-    layer._myDataShapes = [];
+    childContainer._myDataShapes = [];
     for (let i = 0; i < data.length; i++) {
       const point = data[i];
       let sprite;
@@ -93,26 +94,32 @@ export default class PixiOverlayMarkers {
       } else {
         sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
         sprite.tint = this.options.tint;
-        sprite.opacity = this.options.opacity;
+        sprite.alpha = this.options.opacity;
       }
-      layer._myDataShapes.push({ point, sprite });
-      layer.addChild(sprite);
+      childContainer._myDataShapes.push({ point, sprite });
+      childContainer.addChild(sprite);
     }
 
     // attach a custom draw function callback for each container
-    layer._myDrawFunc = (map, zoom, renderer, project, scale) => {
+    childContainer._myDrawFunc = (map, zoom, renderer, project, scale) => {
       let invScale = this.options.invScaleBase / scale;
       const minScale = this.options.minScale;
       const maxScale = this.options.maxScale;
 
-      for (let i = 0; i < layer._myDataShapes.length; i++) {
-        const point = layer._myDataShapes[i].point;
-        const sprite = layer._myDataShapes[i].sprite;
+      for (let i = 0; i < childContainer._myDataShapes.length; i++) {
+        const point = childContainer._myDataShapes[i].point;
+        const sprite = childContainer._myDataShapes[i].sprite;
 
-        const coords = [point.lat, point.lon];
-        const newPosition = project(coords);
-        sprite.x = newPosition.x;
-        sprite.y = newPosition.y;
+        
+        if (!childContainer._hasProjected) {
+          // by default execute only one time
+          // expensive operation, only project if the markers have moved
+          const coords = [point.lat, point.lon];
+          const position = project(coords);
+          sprite.x = position.x;
+          sprite.y = position.y;          
+        }
+
         sprite.anchor.set(0.5, 0.5);
         if (invScale < minScale) {
           invScale = minScale;
@@ -120,15 +127,21 @@ export default class PixiOverlayMarkers {
           invScale = maxScale;
         }
         sprite.scale.set(invScale);
+
+        // callback to enable opportunities to apply transformations such as move
+        if (sprite._runTransformation) {
+          sprite._runTransformation(sprite, project, scale, invScale);
+        } 
       }
-      renderer.render(layer);
+      childContainer._hasProjected = true;
+      renderer.render(childContainer);
     };
-    layer._myId = id;
+    childContainer._myId = id;
     // add the child layer to the main container
     // the next time a draw function is triggered, this will be rendered automatically
 
-    this.rootContainer.addChild(layer);
-    return layer;
+    this.rootContainer.addChild(childContainer);
+    return childContainer;
   }
 
   removeLayer(id) {
@@ -136,7 +149,7 @@ export default class PixiOverlayMarkers {
       if (childContainer._myId === id) {
         // not sure if you have to call both, but at least remove it from the root container
         this.rootContainer.removeChild(childContainer);
-        // childContainer.destroy();
+        childContainer.destroy();
         if (this._render) {
           this._render();
         }
@@ -154,6 +167,10 @@ export default class PixiOverlayMarkers {
     if (this._render) {
       this._render();
     }
+  }
+
+  update() {
+    this.pixiLayer._update();
   }
 
   convertColorToHex(color) {
